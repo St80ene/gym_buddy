@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import './chatbot.css';
 
 const ChatBot = () => {
   const [messages, setMessages] = useState([]);
@@ -31,42 +32,68 @@ const ChatBot = () => {
   };
 
   const handleOnChange = (e) => {
-    console.log('State updating');
     setQuestion(e.target.value);
   };
 
   const handleClearQuestion = () => {
     setQuestion('');
-    console.log('State cleared');
   };
 
-  useEffect(() => {
-    console.log({ question });
-  }, [question]);
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      handleSend(e);
+    }
+  };
 
   return (
-    <div>
-      {messages.map((msg, index) => (
-        <div
-          key={index}
-          style={{ textAlign: msg.sender === 'user' ? 'right' : 'left' }}
-        >
-          <strong>{msg.sender === 'user' ? 'You' : 'Gym Buddy'}:</strong>{' '}
-          {msg.text}
+    <div className='chat-container'>
+      <div className='chat-header'>
+        <img
+          src='../src/assets/striveFit.webp'
+          alt='Gym Buddy Logo'
+          className='chat-logo'
+        />
+        <h2>Gym Buddy</h2>
+      </div>
+      <div className='chat-window'>
+        {messages.map((msg, index) => (
+          <div
+            key={index}
+            className={`message-bubble ${
+              msg.sender === 'user' ? 'user-bubble' : 'bot-bubble'
+            }`}
+          >
+            <strong>{msg.sender === 'user' ? 'You' : 'Gym Buddy'}:</strong>{' '}
+            {msg.text}
+          </div>
+        ))}
+      </div>
+      <form className='chat-input-form' onSubmit={handleSend}>
+        <textarea
+          required
+          value={question}
+          onChange={handleOnChange}
+          onKeyDown={handleKeyPress} // Detect Enter key
+          placeholder='Type your message...'
+          className='chat-input'
+        />
+        <div className='chat-actions'>
+          <button
+            disabled={!question.trim()}
+            type='submit'
+            className='send-button'
+          >
+            Send
+          </button>
+          <button
+            disabled={!question.trim()}
+            type='button'
+            onClick={handleClearQuestion}
+            className='clear-button'
+          >
+            Clear
+          </button>
         </div>
-      ))}
-      <form onSubmit={handleSend}>
-        <textarea required value={question} onChange={handleOnChange} />
-        <button disabled={!question.trim()} type='submit'>
-          Send
-        </button>
-        <button
-          disabled={!question.trim()}
-          type='button'
-          onClick={handleClearQuestion}
-        >
-          Clear
-        </button>
       </form>
     </div>
   );
