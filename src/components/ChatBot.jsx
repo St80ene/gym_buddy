@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './chatbot.css';
 
+const chat_url = import.meta.env.VITE_BACKEND_URL;
+
 const ChatBot = () => {
   const [messages, setMessages] = useState([]);
   const [question, setQuestion] = useState('');
@@ -13,8 +15,9 @@ const ChatBot = () => {
         ...prevMessages,
         { sender: 'user', text: question },
       ]);
+
       try {
-        const response = await axios.post('http://localhost:5000/chat', {
+        const response = await axios.post(chat_url, {
           message: question,
         });
 
@@ -44,6 +47,10 @@ const ChatBot = () => {
       handleSend(e);
     }
   };
+
+  useEffect(() => {
+    console.log({ chat_url });
+  }, [chat_url]);
 
   return (
     <div className='chat-container'>
