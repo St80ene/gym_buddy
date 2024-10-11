@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './chatbot.css';
 
-const chat_url = import.meta.env.VITE_BACKEND_URL;
+const port = import.meta.env.VITE_BACKEND_PORT;
 
 const ChatBot = () => {
+  const chat_url = `http://localhost:${port}/chat`;
+
   const [messages, setMessages] = useState([]);
   const [question, setQuestion] = useState('');
 
@@ -15,6 +17,8 @@ const ChatBot = () => {
         ...prevMessages,
         { sender: 'user', text: question },
       ]);
+
+      console.log('chat_url', chat_url);
 
       try {
         const response = await axios.post(chat_url, {
@@ -42,15 +46,11 @@ const ChatBot = () => {
     setQuestion('');
   };
 
-  const handleKeyPress = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      handleSend(e);
-    }
-  };
-
-  useEffect(() => {
-    console.log({ chat_url });
-  }, [chat_url]);
+  // const handleKeyPress = (e) => {
+  //   if (e.key === 'Enter' && !e.shiftKey) {
+  //     handleSend(e);
+  //   }
+  // };
 
   return (
     <div className='chat-container'>
@@ -80,7 +80,7 @@ const ChatBot = () => {
           required
           value={question}
           onChange={handleOnChange}
-          onKeyDown={handleKeyPress} // Detect Enter key
+          // onKeyDown={handleKeyPress} // Detect Enter key
           placeholder='Type your message...'
           className='chat-input'
         />
