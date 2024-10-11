@@ -30,12 +30,12 @@ trainer = ListTrainer(chatbot)
 trainer.train(training_data)
 
 def find_free_port():
+    
     new_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     new_socket.bind('', 0) # Bind to an available port
     port = new_socket.getsockname()[1]
     new_socket.close()
     
-    print(f"The OS has assigned port: {port}")
     return port
 
 # Define API route to receive responses
@@ -50,7 +50,6 @@ def chatBot():
     response = chatbot.get_response(user_message)
     stringifiedResponse = str(response)
     
-    print(stringifiedResponse)
     
     return jsonify({"response": str(stringifiedResponse)})
 
@@ -62,6 +61,5 @@ if __name__ == "__main__":
         app.run(debug=True, port=assigned_port)
     except OSError:
         # Find free port of desired is in use
-        print(f"Port {assigned_port} is already in use. Trying another port...")
         free_port = find_free_port()
         app.run(debug=True, port=free_port)
