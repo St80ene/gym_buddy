@@ -1,7 +1,32 @@
+import datetime
+
+
+current_time = datetime.datetime.now()
+current_hour = current_time.hour
+current_day = current_time.weekday()  # Monday is 0, Sunday is 6
+
+if current_day >= 5:  # Weekend check (Saturday or Sunday)
+    if current_hour < 12:
+        greeting = 'Happy Weekend Morning'
+    elif current_hour >= 12 and current_hour < 18:
+        greeting = 'Happy Weekend Afternoon'
+    else:
+        greeting = 'Happy Weekend Evening'
+else:  # Weekday greeting
+    if current_hour < 12:
+        greeting = 'Good Morning'
+    elif current_hour >= 12 and current_hour < 18:
+        greeting = 'Good Afternoon'
+    else:
+        greeting = 'Good Evening'
+        
+        
+        
+
 training_data = [
     # Greetings
-    "Hello", "Hi there! Welcome to Gym Buddy! How can I assist you today?",
-    "Hi", "Hello! Ready to hit the gym? How can I help you?",
+    "Hello", f"{greeting}! Welcome to Gym Buddy! How can I assist you today?",
+    "Hi", f"{greeting}! Ready to hit the gym? How can I help you?",
     "Good morning", "Good morning! Let's make today a great workout day!",
     "Good afternoon", "Good afternoon! How can I support your fitness journey today?",
     "Good evening", "Good evening! Ready to unwind with a good workout?",

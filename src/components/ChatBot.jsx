@@ -46,11 +46,11 @@ const ChatBot = () => {
     setQuestion('');
   };
 
-  // const handleKeyPress = (e) => {
-  //   if (e.key === 'Enter' && !e.shiftKey) {
-  //     handleSend(e);
-  //   }
-  // };
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      handleSend(e);
+    }
+  };
 
   return (
     <div className='chat-container'>
@@ -70,7 +70,6 @@ const ChatBot = () => {
               msg.sender === 'user' ? 'user-bubble' : 'bot-bubble'
             }`}
           >
-            <strong>{msg.sender === 'user' ? 'You' : 'Gym Buddy'}:</strong>{' '}
             {msg.text}
           </div>
         ))}
@@ -80,7 +79,7 @@ const ChatBot = () => {
           required
           value={question}
           onChange={handleOnChange}
-          // onKeyDown={handleKeyPress} // Detect Enter key
+          onKeyDown={handleKeyPress} // Detect Enter key
           placeholder='Type your message...'
           className='chat-input'
         />
