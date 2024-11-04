@@ -3,10 +3,10 @@ import axios from 'axios';
 import './chatbot.css';
 
 const port = import.meta.env.VITE_BACKEND_PORT;
+const domain = import.meta.env.VITE_BACKEND_PORT;
 
 const ChatBot = () => {
-  const chat_url = `http://localhost:${port}/chat`;
-  const shutdown_url = `http://localhost:${port}/shutdown`; // Shutdown endpoint
+  const chat_url = `${domain}:${port}/chat`;
 
   const [messages, setMessages] = useState([]);
   const [question, setQuestion] = useState('');
@@ -37,23 +37,6 @@ const ChatBot = () => {
         return;
       }
       setQuestion('');
-    }
-  };
-
-  const handleShutdown = async () => {
-    try {
-      const response = await axios.post(shutdown_url);
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { sender: 'system', text: 'Server shutting down...' },
-      ]);
-      console.log('Server is shutting down:', response.data.message);
-    } catch (error) {
-      console.error('Error shutting down the server:', error);
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { sender: 'system', text: 'Failed to shut down the server.' },
-      ]);
     }
   };
 
@@ -140,11 +123,6 @@ const ChatBot = () => {
           </button>
         </div>
       </form>
-      <div className='shutdown-actions'>
-        <button onClick={handleShutdown} className='shutdown-button'>
-          Exit
-        </button>
-      </div>
     </div>
   );
 };
