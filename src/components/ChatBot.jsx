@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import './chatbot.css';
 
@@ -6,9 +6,13 @@ const port = import.meta.env.VITE_BACKEND_PORT;
 
 const ChatBot = () => {
   const chat_url = `http://localhost:${port}/chat`;
+  const shutdown_url = `http://localhost:${port}/shutdown`; // Shutdown endpoint
 
   const [messages, setMessages] = useState([]);
   const [question, setQuestion] = useState('');
+  const [isAutoScroll, setIsAutoScroll] = useState(true); // For managing auto scroll
+
+  const chatWindowRef = useRef(null); // To track the chat window
 
   const handleSend = async (e) => {
     e.preventDefault();
@@ -17,8 +21,6 @@ const ChatBot = () => {
         ...prevMessages,
         { sender: 'user', text: question },
       ]);
-
-      console.log('chat_url', chat_url);
 
       try {
         const response = await axios.post(chat_url, {
@@ -38,6 +40,23 @@ const ChatBot = () => {
     }
   };
 
+  const handleShutdown = async () => {
+    try {
+      const response = await axios.post(shutdown_url);
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { sender: 'system', text: 'Server shutting down...' },
+      ]);
+      console.log('Server is shutting down:', response.data.message);
+    } catch (error) {
+      console.error('Error shutting down the server:', error);
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { sender: 'system', text: 'Failed to shut down the server.' },
+      ]);
+    }
+  };
+
   const handleOnChange = (e) => {
     setQuestion(e.target.value);
   };
@@ -52,6 +71,26 @@ const ChatBot = () => {
     }
   };
 
+  // Automatically scroll to the last message unless the user has scrolled up
+  useEffect(() => {
+    if (isAutoScroll) {
+      chatWindowRef.current?.lastElementChild?.scrollIntoView({
+        behavior: 'smooth',
+      });
+    }
+  }, [messages, isAutoScroll]);
+
+  // Handle scroll event to detect if the user has scrolled up
+  const handleScroll = () => {
+    const chatWindow = chatWindowRef.current;
+    if (chatWindow) {
+      const isAtBottom =
+        chatWindow.scrollHeight - chatWindow.scrollTop ===
+        chatWindow.clientHeight;
+      setIsAutoScroll(isAtBottom); // Auto-scroll only when at the bottom
+    }
+  };
+
   return (
     <div className='chat-container'>
       <div className='chat-header'>
@@ -62,7 +101,7 @@ const ChatBot = () => {
         />
         <h2>Gym Buddy</h2>
       </div>
-      <div className='chat-window'>
+      <div className='chat-window' ref={chatWindowRef} onScroll={handleScroll}>
         {messages.map((msg, index) => (
           <div
             key={index}
@@ -79,7 +118,7 @@ const ChatBot = () => {
           required
           value={question}
           onChange={handleOnChange}
-          onKeyDown={handleKeyPress} // Detect Enter key
+          onKeyDown={handleKeyPress}
           placeholder='Type your message...'
           className='chat-input'
         />
@@ -101,6 +140,11 @@ const ChatBot = () => {
           </button>
         </div>
       </form>
+      <div className='shutdown-actions'>
+        <button onClick={handleShutdown} className='shutdown-button'>
+          Exit
+        </button>
+      </div>
     </div>
   );
 };
