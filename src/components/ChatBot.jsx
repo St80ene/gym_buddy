@@ -1,12 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import './chatbot.css';
 
-const chat_url = import.meta.env.VITE_BACKEND_URL;
+const port = import.meta.env.VITE_BACKEND_PORT;
+const domain = import.meta.env.VITE_BACKEND_PORT;
 
 const ChatBot = () => {
+  const chat_url = `${domain}:${port}/chat`;
+
   const [messages, setMessages] = useState([]);
   const [question, setQuestion] = useState('');
+  const [isAutoScroll, setIsAutoScroll] = useState(true); // For managing auto scroll
+
+  const chatWindowRef = useRef(null); // To track the chat window
 
   const handleSend = async (e) => {
     e.preventDefault();
@@ -48,9 +54,25 @@ const ChatBot = () => {
     }
   };
 
+  // Automatically scroll to the last message unless the user has scrolled up
   useEffect(() => {
-    console.log({ chat_url });
-  }, [chat_url]);
+    if (isAutoScroll) {
+      chatWindowRef.current?.lastElementChild?.scrollIntoView({
+        behavior: 'smooth',
+      });
+    }
+  }, [messages, isAutoScroll]);
+
+  // Handle scroll event to detect if the user has scrolled up
+  const handleScroll = () => {
+    const chatWindow = chatWindowRef.current;
+    if (chatWindow) {
+      const isAtBottom =
+        chatWindow.scrollHeight - chatWindow.scrollTop ===
+        chatWindow.clientHeight;
+      setIsAutoScroll(isAtBottom); // Auto-scroll only when at the bottom
+    }
+  };
 
   return (
     <div className='chat-container'>
@@ -62,7 +84,7 @@ const ChatBot = () => {
         />
         <h2>Gym Buddy</h2>
       </div>
-      <div className='chat-window'>
+      <div className='chat-window' ref={chatWindowRef} onScroll={handleScroll}>
         {messages.map((msg, index) => (
           <div
             key={index}
@@ -70,7 +92,6 @@ const ChatBot = () => {
               msg.sender === 'user' ? 'user-bubble' : 'bot-bubble'
             }`}
           >
-            <strong>{msg.sender === 'user' ? 'You' : 'Gym Buddy'}:</strong>{' '}
             {msg.text}
           </div>
         ))}
@@ -80,7 +101,7 @@ const ChatBot = () => {
           required
           value={question}
           onChange={handleOnChange}
-          onKeyDown={handleKeyPress} // Detect Enter key
+          onKeyDown={handleKeyPress}
           placeholder='Type your message...'
           className='chat-input'
         />
