@@ -30,31 +30,11 @@
 ### **1. Clone the Repository**
 
 ```bash
-git clone https://github.com/your-username/gym_buddy.git
+git clone https://github.com/st80ene/gym_buddy.git
 cd gym_buddy
 ```
-## 2. Setting Up the Backend
-Navigate to the backend/ directory and set up your Python virtual environment:
 
-```bash
-cd backend
-python3 -m venv venv
-source venv/bin/activate  # for Windows use `venv\Scripts\activate`
-```
-
-Install the required Python packages:
-
-```bash
-pip install -r requirements.txt
-```
-
-Run the Flask server:
-
-```bash
-flask run
-```
-
-## 3. Setting Up the Frontend
+## 2. Setting Up the Frontend
 
 Navigate to the frontend/ directory:
 
@@ -68,29 +48,13 @@ Start the React development server:
 ```bash
 npm start
 ```
-## 4. Run the App
-Once both the backend and frontend servers are running, visit http://localhost:3000 in your browser to interact with Gym Buddy.
+or using yarn
 
-File Structure 📂
-```plaintext
-
-gym_buddy/
-│
-├── backend/
-│   ├── app.py          # Flask API routes
-│   ├── chatbot.py      # Core chatbot logic
-│   ├── requirements.txt # Python dependencies
-│
-├── frontend/
-│   ├── src/
-│   │   ├── assets/     # Images, icons, and other static assets
-│   │   ├── components/ # React components including ChatBot
-│   ├── App.jsx         # Main React component
-│   ├── index.jsx       # Entry point for React
-│   └── package.json    # Frontend dependencies
-│
-└── README.md           # Project documentation
+```bash
+yarn dev
 ```
+## 3. Run the App
+Once the frontend servers are running, visit http://localhost:3000 in your browser to interact with Gym Buddy.
 
 ## How to Contribute 🤝
 
