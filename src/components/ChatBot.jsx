@@ -2,12 +2,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import './chatbot.css';
 
-const port = import.meta.env.VITE_BACKEND_PORT;
-const domain = import.meta.env.VITE_BACKEND_PORT;
+// const domain = import.meta.env.VITE_DOMAIN;
 
 const ChatBot = () => {
-  const chat_url = `${domain}:${port}/chat`;
-
   const [messages, setMessages] = useState([]);
   const [question, setQuestion] = useState('');
   const [isAutoScroll, setIsAutoScroll] = useState(true); // For managing auto scroll
@@ -23,9 +20,12 @@ const ChatBot = () => {
       ]);
 
       try {
-        const response = await axios.post(chat_url, {
-          message: question,
-        });
+        const response = await axios.post(
+          `https://gym-buddy-backend-rxip.onrender.com/chat`,
+          {
+            message: question,
+          }
+        );
 
         // Add bot response to the message list
         setMessages((prevMessages) => [
@@ -74,6 +74,14 @@ const ChatBot = () => {
     }
   };
 
+  useEffect(() => {
+    if (isAutoScroll) {
+      chatWindowRef.current?.lastElementChild?.scrollIntoView({
+        behavior: 'smooth',
+      });
+    }
+  }, [messages, isAutoScroll]);
+
   return (
     <div className='chat-container'>
       <div className='chat-header'>
@@ -112,14 +120,6 @@ const ChatBot = () => {
             className='send-button'
           >
             Send
-          </button>
-          <button
-            disabled={!question.trim()}
-            type='button'
-            onClick={handleClearQuestion}
-            className='clear-button'
-          >
-            Clear
           </button>
         </div>
       </form>
