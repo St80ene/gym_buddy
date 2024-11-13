@@ -56,6 +56,9 @@ yarn dev
 ## 3. Run the App
 Once the frontend servers are running, visit http://localhost:3000 in your browser to interact with Gym Buddy.
 
+## Backend Repo 
+[GitHub Link](https://github.com/St80ene/gym_buddy_backend)
+
 ## How to Contribute 🤝
 
 We welcome contributions! If you’d like to contribute to the project, follow these steps:
